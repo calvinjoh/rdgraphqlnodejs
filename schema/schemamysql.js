@@ -72,7 +72,7 @@ const BookType = new GraphQLObjectType({
                         "Data Book Is Empty"
                       );      
                 }
-                return query_mysql('SELECT * FROM author WHERE id='+parents.id_author_fk).then(function(result){ //uquery untuk mndapatkan data author
+                return query_mysql_cud('SELECT * FROM author WHERE id=?',[parents.id_author_fk]).then(function(result){ //uquery untuk mndapatkan data author
                     return result;
                 });
             }
@@ -108,7 +108,7 @@ const RootQuery = new GraphQLObjectType({
                 id:{type:GraphQLID}
             },
             resolve(parents,args){ //untuk mengambil datanya
-                return query_mysql('SELECT * FROM book WHERE id='+args.id).then(function(result){
+                return query_mysql_cud('SELECT * FROM book WHERE id=?',[args.id]).then(function(result){
                     return result[0];
                 });
             }
@@ -117,7 +117,7 @@ const RootQuery = new GraphQLObjectType({
             type:AuthorType,
             args:{id:{type:GraphQLID}},
             resolve(parents,args){
-                return query_mysql('SELECT * FROM author WHERE id='+args.id).then(function(result){
+                return query_mysql_cud('SELECT * FROM author WHERE id=?',[args.id]).then(function(result){
                     return result[0];
                 });
             }
@@ -163,7 +163,7 @@ const Mutation = new GraphQLObjectType({
                 genre:{type:GraphQLString},
             },
             resolve(parents,args){
-                return query_mysql("UPDATE book SET name='"+args.name+"',genre='"+args.genre+"',id_author_fk='"+args.id_author_fk+"' WHERE id="+args.id).then(function(result){
+                return query_mysql_cud("UPDATE book SET name=?,genre=?,id_author_fk=? WHERE id=?",[args.name,args.genre,args.id_author_fk,args.id]).then(function(result){
                     return [];
                 });
             }
@@ -174,7 +174,7 @@ const Mutation = new GraphQLObjectType({
                 id:{type:GraphQLID}
             },
             resolve(parents,args){
-                return query_mysql("DELETE FROM book WHERE id="+args.id).then(function(result){
+                return query_mysql_cud("DELETE FROM book WHERE id=?",[args.id]).then(function(result){
                     return [];
                 });
             }
