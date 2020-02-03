@@ -33,6 +33,28 @@ function query_mysql(query, callback){
 }
 
 
+function query_mysql_cud(query,val,callback){
+    return new Promise((resolve,reject)=>{ //Untuk return data 
+        koneksi.query(query,val,function(error, rows, fields){
+            
+            if(error){
+                reject(error);
+            }
+            
+            if(rows){
+                if(rows.length>0){
+                    var result = JSON.parse(JSON.stringify(rows));
+                    resolve(result);
+                }
+            }
+
+            resolve([{}]);
+            
+        });
+    })
+}
+
+
 //Membuat Tipe Field Pada Obejct / Sebagai Bentuk Jsonnya Nanti
 const BookType = new GraphQLObjectType({
     name:'Book',
@@ -125,7 +147,7 @@ const Mutation = new GraphQLObjectType({
                 genre:{type:GraphQLString},
             },
             resolve(parents,args){
-                return query_mysql("INSERT INTO book (id_author_fk,name,genre) VALUES ('"+ args.id_author_fk +"','"+ args.name +"','"+ args.genre +"');").then(function(result){
+                return query_mysql_cud("INSERT INTO book (id_author_fk,name,genre) VALUES (?,?,?)",[args.id_author_fk,args.name,args.genre]).then(function(result){
                     return query_mysql("SELECT * FROM book WHERE id = (SELECT MAX(id) FROM book)").then(function(result){
                         return result[0];
                     });
