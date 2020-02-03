@@ -2,6 +2,8 @@ const express = require('express'); //Include Express
 const app = express(); //Mengaktifkan Express
 const graphqlHTTP = require('express-graphql'); //Include Express GraphQL
 const schemafilemysql = require('./schema/schemamysql'); //File Schema Dengan Data Dari Database MySQL
+const schemafilepostgre = require('./schema/schemapostgre'); //File Schema Dengan Data Dari Database PostgreSQL
+const schemafilemongo = require('./schema/schemamongo'); //File Schema Dengan Data Dari Database PostgreSQL
 const cors = require('cors'); //Include Cors
 const schemafile = require('./schema/schema'); //File Schema Dengan Data Dummy
 
@@ -10,6 +12,20 @@ app.use(cors()); //Jalanin Cors
 //Link GraphQL Dengan Data Dari DB Mysql 
 app.use('/graphmysql', graphqlHTTP({
     schema:schemafilemysql, //File Schema Yang Dituju
+    graphiql:true, //Untuk mengaktifkan GUI GraphQL pada WEB 
+}));
+//------------------------------
+
+//Link GraphQL Dengan Data Dari DB Postgre 
+app.use('/graphpostgre', graphqlHTTP({
+    schema:schemafilepostgre, //File Schema Yang Dituju
+    graphiql:true, //Untuk mengaktifkan GUI GraphQL pada WEB 
+}));
+//------------------------------
+
+//Link GraphQL Dengan Data Dari DB MongoDB
+app.use('/graphmongo', graphqlHTTP({
+    schema:schemafilemongo, //File Schema Yang Dituju
     graphiql:true, //Untuk mengaktifkan GUI GraphQL pada WEB 
 }));
 //------------------------------
