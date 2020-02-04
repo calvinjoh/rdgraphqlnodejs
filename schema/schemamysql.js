@@ -2,6 +2,10 @@ const graphql=require('graphql');
 const _=require('lodash');
 const mysql = require('mysql');
 const {GraphQLSchema,GraphQLObjectType,GraphQLList,GraphQLString,GraphQLID,GraphQLInt} = graphql;
+const DataLoader = require('dataloader');
+
+
+
 
 var koneksi=mysql.createConnection({
     host:'localhost',
@@ -85,10 +89,28 @@ const AuthorType = new GraphQLObjectType({
     fields:()=>({
         id:{type:GraphQLID},//id dengan jenis ID
         name:{type:GraphQLString},//name dengan jenis String
-        age:{type:GraphQLInt}//Age dengan jenis Integer
+        age:{type:GraphQLInt},//Age dengan jenis Integer
+        list_book:{
+            type:new GraphQLList(BookType), //untuk menampilkan author dalam bentuk list
+            resolve(parents,args){
+                return query_mysql_cud('SELECT * FROM book WHERE id_author_fk=?',[parents.id]).then(function(result){ //uquery untuk mndapatkan data author
+                    return result;
+                });
+            }
+        }
     })
 })
 //---------------------------------
+
+
+//add Caching 
+
+const bookLoader = new DataLoader((id)=>{
+    return query_mysql_cud('SELECT * FROM book WHERE id=?',[id]).then(function(result){
+        return result;
+    });
+});
+
 
 //Untuk Root Query Atau Sebagai Route Pemanggilan Ke Object
 const RootQuery = new GraphQLObjectType({
@@ -108,9 +130,7 @@ const RootQuery = new GraphQLObjectType({
                 id:{type:GraphQLID}
             },
             resolve(parents,args){ //untuk mengambil datanya
-                return query_mysql_cud('SELECT * FROM book WHERE id=?',[args.id]).then(function(result){
-                    return result[0];
-                });
+                return bookLoader.load(args.id);
             }
         },
         author:{
@@ -184,6 +204,10 @@ const Mutation = new GraphQLObjectType({
 
 
 // koneksi.end();
+
+
+
+
 
 //Untuk Export Schema Dengan Query Dari Variabel RootQuery
 module.exports= new GraphQLSchema({
