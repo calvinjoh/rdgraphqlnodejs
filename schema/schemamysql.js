@@ -67,6 +67,9 @@ const BookType = new GraphQLObjectType({
         id_author_fk:{type:GraphQLID},//id_author_fk dengan jenis ID
         name:{type:GraphQLString}, //name dengan jenis String
         genre:{type:GraphQLString}, //genre dengan jenis String
+        book_name:{type:GraphQLString},
+        author_name:{type:GraphQLString},
+        qty:{type:GraphQLInt},
         list_author:{ //untuk relasi ke author
             type:new GraphQLList(AuthorType), //untuk menampilkan author dalam bentuk list
             resolve(parents,args){
@@ -122,6 +125,52 @@ const RootQuery = new GraphQLObjectType({
                 return query_mysql('SELECT * FROM book').then(function(result){
                     return result;
                 });
+            }
+        },
+        get_data_book_pagination:{
+            type:GraphQLList(BookType),
+            args:{
+                before:{type:GraphQLID},
+                after:{type:GraphQLID},
+                first:{type:GraphQLInt},
+                last:{type:GraphQLInt}
+            },
+            resolve(parents,args){ //untuk mengambil datanya
+                // return query_mysql('SELECT a.name as book_name, count(*) as qty FROM book a INNER JOIN author b ON a.id_author_fk = b.id GROUP BY a.id_author_fk').then(function(result){
+                //     return result;
+                // });
+                var query = "SELECT * FROM book";
+                var status_and = false;
+
+                if(args.before || args.after){
+                    query = query+" WHERE ";
+
+                    if(args.after){
+                        status_and = true;
+                        query = query+"id > "+args.after;
+                    }
+
+                    if(args.before){
+                        if(status_and==true){
+                            query = query+" AND id < "+args.before;
+                        }else{
+                            query = query+"id < "+args.before;
+                        }
+                    }
+
+                    if(args.first){
+                        query = query+" ORDER BY id DESC LIMIT "+args.first+1;
+                    }
+
+                    if(args.last){
+                        query = query+" ORDER BY id ASC LIMIT "+args.last+1;
+                    }
+
+                    return query_mysql(query).then(function(result){
+                        return result;
+                    });
+
+                }
             }
         },
         get_data_book_detail:{
