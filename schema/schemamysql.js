@@ -3,7 +3,7 @@ const _=require('lodash');
 const mysql = require('mysql');
 const {GraphQLSchema,GraphQLObjectType,GraphQLList,GraphQLString,GraphQLID,GraphQLInt} = graphql;
 const DataLoader = require('dataloader');
-
+const { GraphQLUpload } = require('graphql-upload')
 
 
 
@@ -246,6 +246,26 @@ const Mutation = new GraphQLObjectType({
                 return query_mysql_cud("DELETE FROM book WHERE id=?",[args.id]).then(function(result){
                     return [];
                 });
+            }
+        },
+        upload_image:{ //Untuk tambah data book 
+            type:BookType,
+            args:{
+                // id_author_fk:{type:GraphQLID},
+                // name:{type:GraphQLString},
+                // genre:{type:GraphQLString},
+                book_cover_image:{type:GraphQLUpload}
+            },
+            async resolve(parents,args){
+                console.log("jalan");
+                // const { filename, mimetype, createReadStream } = await args.book_cover_image;
+                // const stream = createReadStream();
+                // console.log(stream);
+                // return query_mysql_cud("INSERT INTO book (id_author_fk,name,genre) VALUES (?,?,?)",[args.id_author_fk,args.name,args.genre]).then(function(result){
+                //     return query_mysql("SELECT * FROM book WHERE id = (SELECT MAX(id) FROM book)").then(function(result){
+                //         return result[0];
+                //     });
+                // });
             }
         },
     }
