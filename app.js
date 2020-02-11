@@ -7,6 +7,9 @@ const schemafilemongo = require('./schema/schemamongo'); //File Schema Dengan Da
 const cors = require('cors'); //Include Cors
 const schemafile = require('./schema/schema'); //File Schema Dengan Data Dummy
 
+//untuk crypt
+const {graphql} = require('graphql');
+
 app.use(cors()); //Jalanin Cors
 
 //Link GraphQL Dengan Data Dari DB Mysql 
@@ -15,6 +18,20 @@ app.use('/graphmysql', graphqlHTTP({
     graphiql:true, //Untuk mengaktifkan GUI GraphQL pada WEB 
 }));
 //------------------------------
+
+//Untuk Encrypt
+function run_query(str){
+    return graphql(schemafilemysql,str);
+}
+
+app.use('/graphmysqlcrypt',(req,res)=>{
+        var str_query = Buffer.from(req.query.query, 'base64').toString('ascii');
+        run_query(str_query).then(data => {
+            var hasil = Buffer.from(JSON.stringify(data)).toString('base64');
+            res.send(hasil);
+        });
+});
+//--------------------------------------------------------------------------------
 
 //Link GraphQL Dengan Data Dari DB Postgre 
 app.use('/graphpostgre', graphqlHTTP({
