@@ -41,11 +41,9 @@ function query_mysql(query, callback){
 
 
 exports.get_book = function get_book(req,res){
-    return new Promise((resolve,reject)=>{ //Untuk return data 
-        koneksi.getConnection(function(error, connection){    
-            query_mysql('SELECT * FROM book').then(function(result){
-                resolve(result);
-            });
+    return new Promise((resolve,reject)=>{ //Untuk return data   
+        query_mysql('SELECT * FROM book').then(function(result){
+            resolve(result);
         });
     })
 }

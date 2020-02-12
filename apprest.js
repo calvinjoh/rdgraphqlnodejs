@@ -10,7 +10,7 @@ app.use(cors()); //Jalanin Cors
 app.get('/getbooks', function (req, res) {
     schemafilemysqlrest.get_book().then(function(result){
         // res.send(result);
-        res.status(200).send({"response": result});
+        res.status(200).send({"data": result});
     });
  })
 

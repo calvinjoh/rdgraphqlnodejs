@@ -14,13 +14,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Base64/1.1.0/base64.js"></script>
 <script>
 $(document).ready(function(){
-    var link = window.btoa("{get_data_book{name}}","A");
-    console.log(link);
-  $.ajax("http://localhost:3000/graphmysqlcrypt?query="+link, {
+    var link = window.btoa("{get_data_book{name}}"); //encryppt query
+    console.log(link); 
+    $.ajax("http://localhost:3000/graphmysqlcrypt?query="+link, {
     success: function(data) {
         console.log(data);
-        var hasil = window.atob(data);
-        console.log(JSON.parse(hasil));
+        var hasil = window.atob(data); //decrypt hasil response
+        console.log(JSON.parse(hasil)); // bah menjadi object kembali
     },
     error: function() {
 

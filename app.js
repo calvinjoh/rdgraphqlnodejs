@@ -9,7 +9,7 @@ const schemafile = require('./schema/schema'); //File Schema Dengan Data Dummy
 const schemafilemysqlpool = require('./schema/schemamysqlpool'); //File Schema Dengan Data Dari Database MySQL
 
 //untuk crypt
-const {graphql} = require('graphql');
+const {graphql} = require('graphql'); //include GraphQL 
 
 app.use(cors()); //Jalanin Cors
 
@@ -29,14 +29,14 @@ app.use('/graphmysqlpool', graphqlHTTP({
 
 //Untuk Encrypt
 function run_query(str){
-    return graphql(schemafilemysql,str);
+    return graphql(schemafilemysql,str); //menjalankan graphql
 }
 
 app.use('/graphmysqlcrypt',(req,res)=>{
-        var str_query = Buffer.from(req.query.query, 'base64').toString('ascii');
-        run_query(str_query).then(data => {
-            var hasil = Buffer.from(JSON.stringify(data)).toString('base64');
-            res.send(hasil);
+        var str_query = Buffer.from(req.query.query, 'base64').toString('ascii'); //decrypt query
+        run_query(str_query).then(data => { //Menjalankan graphQL
+            var hasil = Buffer.from(JSON.stringify(data)).toString('base64'); //encrypt response dari graphQL
+            res.send(hasil); //mengembalikan hasil
         });
 });
 //--------------------------------------------------------------------------------
