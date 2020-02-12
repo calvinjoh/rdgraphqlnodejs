@@ -6,6 +6,7 @@ const schemafilepostgre = require('./schema/schemapostgre'); //File Schema Denga
 const schemafilemongo = require('./schema/schemamongo'); //File Schema Dengan Data Dari Database PostgreSQL
 const cors = require('cors'); //Include Cors
 const schemafile = require('./schema/schema'); //File Schema Dengan Data Dummy
+const schemafilemysqlpool = require('./schema/schemamysqlpool'); //File Schema Dengan Data Dari Database MySQL
 
 //untuk crypt
 const {graphql} = require('graphql');
@@ -15,6 +16,13 @@ app.use(cors()); //Jalanin Cors
 //Link GraphQL Dengan Data Dari DB Mysql 
 app.use('/graphmysql', graphqlHTTP({
     schema:schemafilemysql, //File Schema Yang Dituju
+    graphiql:true, //Untuk mengaktifkan GUI GraphQL pada WEB 
+}));
+//------------------------------
+
+//Link GraphQL Dengan Data Dari DB Mysql 
+app.use('/graphmysqlpool', graphqlHTTP({
+    schema:schemafilemysqlpool, //File Schema Yang Dituju
     graphiql:true, //Untuk mengaktifkan GUI GraphQL pada WEB 
 }));
 //------------------------------

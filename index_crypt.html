@@ -15,8 +15,10 @@
 <script>
 $(document).ready(function(){
     var link = window.btoa("{get_data_book{name}}","A");
+    console.log(link);
   $.ajax("http://localhost:3000/graphmysqlcrypt?query="+link, {
     success: function(data) {
+        console.log(data);
         var hasil = window.atob(data);
         console.log(JSON.parse(hasil));
     },
