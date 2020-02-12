@@ -1,0 +1,1 @@
+{"_id":{"$oid":"5e37f1c07e23f1066c6b404a"},"id":{"$numberInt":"1"},"id_author_fk":{"$numberInt":"1"},"name":"update","genre":"classic","__v":{"$numberInt":"0"}}
